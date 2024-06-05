@@ -1,0 +1,33 @@
+#
+# Copyright (C) 2022 Nethesis S.r.l.
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+[Unit]
+Description=Podman mongo-app.service
+BindsTo=bigcapital.service
+After=bigcapital.service mariadb-app.service
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+EnvironmentFile=%S/state/environment
+EnvironmentFile=%S/state/database.env
+Restart=always
+TimeoutStopSec=70
+ExecStartPre=/bin/rm -f %t/mongo-app.pid %t/mongo-app.ctr-id
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/mongo-app.pid \
+    --cidfile %t/mongo-app.ctr-id --cgroups=no-conmon \
+    --pod-id-file %t/bigcapital.pod-id --replace -d --name mongo-app \
+    --env-file=%S/state/environment \
+    --volume mongo:/var/lib/mongodb \
+    ${MONGO_IMAGE}
+
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/mongo-app.ctr-id -t 10
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/mongo-app.ctr-id
+ExecReload=/usr/bin/podman kill -s HUP mongo-app
+SyslogIdentifier=%u
+PIDFile=%t/mongo-app.pid
+Type=forking
+
+[Install]
+WantedBy=default.target
