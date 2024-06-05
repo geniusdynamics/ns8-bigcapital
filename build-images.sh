@@ -11,24 +11,24 @@ set -e
 # Prepare variables for later use
 images=()
 # The image will be pushed to GitHub container registry
-repobase="${REPOBASE:-ghcr.io/nethserver}"
+repobase="${REPOBASE:-ghcr.io/geniusdynamics}"
 # Configure the image name
-reponame="kickstart"
+reponame="bigcapital"
 
 # Create a new empty container image
 container=$(buildah from scratch)
 
-# Reuse existing nodebuilder-kickstart container, to speed up builds
-if ! buildah containers --format "{{.ContainerName}}" | grep -q nodebuilder-kickstart; then
+# Reuse existing nodebuilder-bigcapital container, to speed up builds
+if ! buildah containers --format "{{.ContainerName}}" | grep -q nodebuilder-bigcapital; then
     echo "Pulling NodeJS runtime..."
-    buildah from --name nodebuilder-kickstart -v "${PWD}:/usr/src:Z" docker.io/library/node:lts
+    buildah from --name nodebuilder-bigcapital -v "${PWD}:/usr/src:Z" docker.io/library/node:lts
 fi
 
 echo "Build static UI files with node..."
 buildah run \
     --workingdir=/usr/src/ui \
     --env="NODE_OPTIONS=--openssl-legacy-provider" \
-    nodebuilder-kickstart \
+    nodebuilder-bigcapital \
     sh -c "yarn install && yarn build"
 
 # Add imageroot directory to the container image
@@ -45,7 +45,7 @@ buildah config --entrypoint=/ \
     --label="org.nethserver.authorizations=traefik@node:routeadm" \
     --label="org.nethserver.tcp-ports-demand=1" \
     --label="org.nethserver.rootfull=0" \
-    --label="org.nethserver.images=docker.io/mariadb:10.11.5 docker.io/nginx:stable-alpine3.17" \
+    --label="org.nethserver.images=docker.io/redis:latest docker.io/mariadb:10.11.5 docker.io/mongo:latest ghcr.io/bigcapitalhq/webapp:latest ghcr.io/bigcapitalhq/server:latest" \
     "${container}"
 # Commit the image
 buildah commit "${container}" "${repobase}/${reponame}"
