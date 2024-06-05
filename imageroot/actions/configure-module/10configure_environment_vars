@@ -53,7 +53,7 @@ email_config  = {
     "MAIL_USERNAME": smtp_settings['username'],
     "MAIL_PASSWORD": smtp_settings['password'],
     "MAIL_PORT": smtp_settings['port'],
-    "MAIL_SECURE": smtp_settings['secure'],
+    "MAIL_SECURE": smtp_settings['encrypt_smtp'],
     "MAIL_FROM_NAME": data.get("MAIL_FROM_NAME", f"BigcapitalHQ {smtp_settings['username']}"),
     "MAIL_FROM_ADDRESS": data.get("MAIL_FROM_ADDRESS", f"{smtp_settings['username']}"),
 }
