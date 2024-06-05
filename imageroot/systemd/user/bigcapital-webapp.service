@@ -1,0 +1,33 @@
+#
+# Copyright (C) 2022 Nethesis S.r.l.
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+[Unit]
+Description=Podman  bigcapital-webapp.service
+BindsTo=bigcapital.service
+After=bigcapital.service mariadb-app.service mongod-app.service redis-app.service bigcapital-server.service
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+EnvironmentFile=%S/state/environment
+EnvironmentFile=-%S/state/smarthost.env
+WorkingDirectory=%S/state
+Restart=always
+TimeoutStopSec=70
+ExecStartPre=/bin/mkdir -p tmp
+ExecStartPre=/bin/rm -f %t/bigcapital-webapp.pid %t/bigcapital-webapp.ctr-id
+ExecStartPre=-runagent discover-smarthost
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/bigcapital-webapp.pid \
+    --cidfile %t/bigcapital-webapp.ctr-id --cgroups=no-conmon \
+    --pod-id-file %t/bigcapital.pod-id --replace -d --name  bigcapital-webapp \
+    ${WEBAPP_IMAGE}
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/bigcapital-webapp.ctr-id -t 10
+ExecReload=/usr/bin/podman kill -s HUP bigcapital-webapp
+SyslogIdentifier=%u
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/bigcapital-webapp.ctr-id
+PIDFile=%t/bigcapital-webapp.pid
+Type=forking
+
+[Install]
+WantedBy=default.target
