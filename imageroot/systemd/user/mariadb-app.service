@@ -5,26 +5,23 @@
 
 [Unit]
 Description=Podman mariadb-app.service
-BindsTo=kickstart.service
-After=kickstart.service
+BindsTo=bigcapital.service
+After=bigcapital.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
 EnvironmentFile=%S/state/environment
+EnvironmentFile=%S/state/database.env
 # EnvironmentFile=%S/state/secrets/passwords.secret
 Restart=always
 TimeoutStopSec=70
 ExecStartPre=/bin/rm -f %t/mariadb-app.pid %t/mariadb-app.ctr-id
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/mariadb-app.pid \
     --cidfile %t/mariadb-app.ctr-id --cgroups=no-conmon \
-    --pod-id-file %t/kickstart.pod-id --replace -d --name mariadb-app \
+    --pod-id-file %t/bigcapital.pod-id --replace -d --name mariadb-app \
     --env-file=%S/state/environment \
     --volume mysql-data:/var/lib/mysql/:Z \
-    --env MARIADB_ROOT_PASSWORD=Nethesis,1234 \
-    --env MARIADB_DATABASE=kickstart \
-    --env MARIADB_USER=kickstart \
-    --env MARIADB_PASSWORD=kickstart \
-    --env MARIADB_AUTO_UPGRADE=1 \
+    --env=MARIADB_* \
     ${MARIADB_IMAGE} \
     --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 ExecStartPost=/usr/bin/podman exec  mariadb-app /bin/bash -c 'printf "[client] \npassword=Nethesis,1234" > /root/.my.cnf'
