@@ -82,7 +82,7 @@ database_config = {
     "DB_CHARSET": "utf8mb4",
     "SYSTEM_DB_NAME": f'{MARIADB_DATABASE}',
     "TENANT_DB_NAME_PERFIX": "bigcapital",
-    "MONGODB_DATABASE_URL": "mongodb://mongo/bigcapital",
+    "MONGODB_DATABASE_URL": "mongodb://localhost:27017/bigcapital",
 }
 jwt_secret = secrets.token_hex(32)
 HOST = data.get("host", "")
