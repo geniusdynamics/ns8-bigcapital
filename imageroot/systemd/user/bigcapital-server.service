@@ -24,7 +24,7 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/bigcapital-server.pid \
     --pod-id-file %t/bigcapital.pod-id --replace -d --name  bigcapital-server \
     --env-file=%S/state/app.env \
     ${SERVER_IMAGE} \
-     /bin/bash -c "node ./build/commands.js system:migrate:latest && node ./build/commands.js tenants:migrate:latest"
+    "node ./build/commands.js system:migrate:latest && node ./build/commands.js tenants:migrate:latest"
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/bigcapital-server.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP bigcapital-server
 SyslogIdentifier=%u
