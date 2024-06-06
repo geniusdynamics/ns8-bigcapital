@@ -1,0 +1,31 @@
+#
+# Copyright (C) 2022 Nethesis S.r.l.
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+[Unit]
+Description=Podman  bigcapital-migrations.service
+BindsTo=bigcapital.service
+After=bigcapital.service mariadb-app.service mongo-app.service redis-app.service bigcapital-server.service
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+EnvironmentFile=%S/state/environment
+EnvironmentFile=-%S/state/smarthost.env
+EnvironmentFile=-%S/state/app.env
+WorkingDirectory=%S/state
+Restart=always
+TimeoutStopSec=70
+ExecStartPre=/bin/mkdir -p tmp
+ExecStartPre=/bin/rm -f %t/bigcapital-migrations.pid %t/bigcapital-migrations.ctr-id
+ExecStartPre=-runagent discover-smarthost
+ExecStart=/bin/bash -c "node ./build/commands.js system:migrate:latest && node ./build/commands.js tenants:migrate:latest"
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/bigcapital-migrations.ctr-id -t 10
+ExecReload=/usr/bin/podman kill -s HUP bigcapital-migrations
+SyslogIdentifier=%u
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/bigcapital-migrations.ctr-id
+PIDFile=%t/bigcapital-migrations.pid
+Type=forking
+
+[Install]
+WantedBy=default.target
