@@ -96,8 +96,8 @@ app_config = {
     "NEW_RELIC_CUSTOM_INSIGHTS_EVENTS_MAX_SAMPLES_STORED": "1000",
     "NEW_RELIC_SPAN_EVENTS_MAX_SAMPLES_STORED": "1000",
     "NEW_RELIC_LICENSE_KEY": "dfwfweewfw22e2e",
-    "GOTENBERG_URL": ":http//localhost:9000",
-    "GOTENBERG_DOCS_URL": "http//localhost:9000",
+    "GOTENBERG_URL": "http//gotenberg-app:3000",
+    "GOTENBERG_DOCS_URL": "http//server:3000/public/",
     **database_config,
     **email_config,
 }
