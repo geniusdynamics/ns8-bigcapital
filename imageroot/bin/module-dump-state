@@ -19,3 +19,4 @@ podman exec mariadb-app mysqldump \
         --single-transaction \
         --quick \
         --add-drop-table  > bigcapital.sql
+podman exec mongo-app mongodump --archive > bigcapital.archive

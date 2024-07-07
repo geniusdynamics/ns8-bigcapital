@@ -6,3 +6,4 @@
 #
 
 rm -vf bigcapital.sql
+rm -vf bigcapital.archive
