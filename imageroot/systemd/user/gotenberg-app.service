@@ -6,7 +6,7 @@
 [Unit]
 Description=Podman gotenberg-app.service
 BindsTo=bigcapital.service
-After=After=bigcapital.service redis-app.service mariadb-app.service mongo-app.service
+After=bigcapital.service redis-app.service mariadb-app.service mongo-app.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
