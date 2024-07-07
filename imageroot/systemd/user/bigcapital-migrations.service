@@ -19,7 +19,8 @@ TimeoutStopSec=70
 ExecStartPre=/bin/mkdir -p tmp
 ExecStartPre=/bin/rm -f %t/bigcapital-migrations.pid %t/bigcapital-migrations.ctr-id
 ExecStartPre=-runagent discover-smarthost
-ExecStart=/bin/bash -c "node ./build/commands.js system:migrate:latest && node ./build/commands.js tenants:migrate:latest"
+ExecStart=/bin/bash -c "node ./build/commands.js system:migrate:latest && node ./build/commands.js tenants:migrate:latest" \
+${SERVER_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/bigcapital-migrations.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP bigcapital-migrations
 SyslogIdentifier=%u
