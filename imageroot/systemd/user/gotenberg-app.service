@@ -1,0 +1,35 @@
+#
+# Copyright (C) 2022 Nethesis S.r.l.
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+[Unit]
+Description=Podman gotenberg-app.service
+BindsTo=bigcapital.service
+After=After=bigcapital.service mariadb-app.service mongod-app.service redis-app.service bigcapital-server.service bigcapital-webapp.service
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+EnvironmentFile=%S/state/environment
+EnvironmentFile=%S/state/database.env
+Restart=always
+TimeoutStopSec=70
+ExecStartPre=/bin/rm -f %t/gotenberg-app.pid %t/gotenberg-app.ctr-id
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/gotenberg-app.pid \
+    --detach \
+    --conmon-pidfile=%t/pgotenberg-app.pid \
+    --pod-id-file=%t/bigcapital.pod-id \
+    --cidfile=%t/pgotenberg-app.ctr-id \
+    --cgroups=no-conmon \
+    --replace --name=%N \
+    --env-file=smarthost.env \
+    ${GOTENBERG_IMAGE}
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/gotenberg-app.ctr-id -t 10
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/gotenberg-app.ctr-id
+ExecReload=/usr/bin/podman kill -s HUP gotenberg-app
+SyslogIdentifier=%u
+PIDFile=%t/gotenberg-app.pid
+Type=forking
+
+[Install]
+WantedBy=default.target
