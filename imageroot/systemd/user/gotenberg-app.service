@@ -17,9 +17,9 @@ TimeoutStopSec=70
 ExecStartPre=/bin/rm -f %t/gotenberg-app.pid %t/gotenberg-app.ctr-id
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/gotenberg-app.pid \
     --detach \
-    --conmon-pidfile=%t/pgotenberg-app.pid \
+    --conmon-pidfile=%t/gotenberg-app.pid \
     --pod-id-file=%t/bigcapital.pod-id \
-    --cidfile=%t/pgotenberg-app.ctr-id \
+    --cidfile=%t/gotenberg-app.ctr-id \
     --cgroups=no-conmon \
     --replace --name=%N \
     --env-file=smarthost.env \
