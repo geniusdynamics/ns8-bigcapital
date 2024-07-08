@@ -45,7 +45,7 @@ buildah config --entrypoint=/ \
     --label="org.nethserver.authorizations=traefik@node:routeadm" \
     --label="org.nethserver.tcp-ports-demand=1" \
     --label="org.nethserver.rootfull=0" \
-    --label="org.nethserver.images=docker.io/redis:latest docker.io/mariadb:10.11.5 docker.io/mongo:latest docker.io/bigcapitalhq/webapp:${APP_VERSION} docker.io/bigcapitalhq/server:${APP_VERSION} docker.io/elestio/bigcapital-migration:${APP_VERSION} docker.io/gotenberg/gotenberg:7.10.2" \
+    --label="org.nethserver.images=docker.io/redis:latest docker.io/mariadb:10.11.5 docker.io/mongo:latest docker.io/bigcapitalhq/webapp:${APP_VERSION} docker.io/bigcapitalhq/server:${APP_VERSION} docker.io/elestio/bigcapital-migration:${APP_VERSION} docker.io/envoyproxy/envoy:v1.30-latest docker.io/gotenberg/gotenberg:7.10.2" \
     "${container}"
 # Commit the image
 buildah commit "${container}" "${repobase}/${reponame}"
