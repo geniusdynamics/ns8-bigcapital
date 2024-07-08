@@ -21,7 +21,7 @@ ExecStartPre=-runagent discover-smarthost
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/envoyproxy.pid \
     --cidfile %t/envoyproxy.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/bigcapital.pod-id --replace -d --name  envoyproxy \
-    --volume envoy/envoy.yaml:/etc/envoy/envoy.yaml:Z \
+    --volume envoy:/etc/envoy/envoy.yaml:Z \
     ${ENVOY_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/envoyproxy.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP envoyproxy
