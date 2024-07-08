@@ -10,8 +10,8 @@
 
 [Unit]
 Description=Podman bigcapital.service
-Requires=redis-app.service mongo-app.service mariadb-app.service bigcapital-server.service bigcapital-webapp.service gotenberg-app.service envoyproxy.service
-Before=redis-app.service mongo-app.service mariadb-app.service bigcapital-server.service bigcapital-webapp.service bigcapital-migrations.service gotenberg-app.service envoyproxy.service
+Requires=redis-app.service mongo-app.service mariadb-app.service bigcapital-server.service bigcapital-webapp.service envoyproxy.service
+Before=redis-app.service mongo-app.service mariadb-app.service bigcapital-server.service bigcapital-webapp.service bigcapital-migrations.service envoyproxy.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
