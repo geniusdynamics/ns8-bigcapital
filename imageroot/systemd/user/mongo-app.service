@@ -6,7 +6,7 @@
 [Unit]
 Description=Podman mongo-app.service
 BindsTo=bigcapital.service
-After=bigcapital.service redis-app.service mariadb-app.service
+After=bigcapital.service redis-app.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
