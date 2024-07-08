@@ -6,7 +6,7 @@
 [Unit]
 Description=Podman  envoyproxy.service
 BindsTo=bigcapital.service
-After=redis-app.service mongo-app.service mariadb-app.service bigcapital-migrations.service bigcapital-server.service bigcapital-webapp.service gotenberg-app.service
+After=redis-app.service mongo-app.service mariadb-app.service bigcapital-server.service bigcapital-migrations.service bigcapital-webapp.service gotenberg-app.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
