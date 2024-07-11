@@ -6,7 +6,7 @@
 [Unit]
 Description=Podman  bigcapital-migrations.service
 BindsTo=bigcapital.service
-After=redis-app.service mongo-app.service mariadb-app.service bigcapital-server.service
+After=redis-app.service mongo-app.service mariadb-app.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
@@ -19,11 +19,11 @@ TimeoutStopSec=70
 ExecStartPre=/bin/mkdir -p tmp
 ExecStartPre=/bin/rm -f %t/bigcapital-migrations.pid %t/bigcapital-migrations.ctr-id
 ExecStartPre=-runagent discover-smarthost
-ExecStart=/bin/bash -c "node ./build/commands.js system:migrate:latest && node ./build/commands.js tenants:migrate:latest" \
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/bigcapital-migrations.pid  \
     --cidfile %t/bigcapital-migrations.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/bigcapital.pod-id --replace -d --name  bigcapital-migrations \
-    --env-file=%S/state/app.env \
-${BIGCAPITAL_MIGRATION_IMAGE}
+    --env-file=%S/state/database-config.env \
+    ${BIGCAPITAL_MIGRATION_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/bigcapital-migrations.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP bigcapital-migrations
 SyslogIdentifier=%u
