@@ -1,19 +1,19 @@
 {
   "name": "bigcapital",
   "description": {
-    "en": "My bigcapital module"
+    "en": "Online accounting software, built to automate business financial processes."
   },
-  "categories": [],
+  "categories": ["financial", "accounting", "business"],
   "authors": [
     {
-      "name": "Name Surname",
-      "email": "author@yourmail.org"
+      "name": "Kemboi Elvis",
+      "email": "kemboielvis@genius.ke"
     }
   ],
   "docs": {
-    "documentation_url": "https://docs.bigcapital.com/",
-    "bug_url": "https://github.com/NethServer/dev",
-    "code_url": "https://github.com/author/ns8-bigcapital"
+    "documentation_url": "https://docs.bigcapital.app/",
+    "bug_url": "https://github.com/geniusdynamics/dev",
+    "code_url": "https://github.com/geniusdynamics/ns8-bigcapital"
   },
-  "source": "ghcr.io/nethserver/bigcapital"
+  "source": "ghcr.io/geniusdynamics/bigcapital"
 }
