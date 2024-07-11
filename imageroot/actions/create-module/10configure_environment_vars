@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+
+#
+# Copyright (C) 2022 Nethesis S.r.l.
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+import json
+import sys
+import agent
+import secrets
+import os
+
+# Try to parse the stdin as JSON.
+# If parsing fails, output everything to stderr
+data = json.load(sys.stdin)
+def generate_random_password():
+    password = os.urandom(16).hex()
+    return password[:16]
+
+
+# Configure database configurations
+
+MARIADB_DATABASE = data.get("MARIADB_DATABASE","bigcapitalhq")
+MARIADB_USER = data.get("MARIADB_USER","bigcapital")
+MARIADB_ROOT_PASSWORD = generate_random_password()
+MARIADB_AUTO_UPGRADE = data.get("MARIADB_AUTO_UPGRADE","1")
+MARIADB_PASSWORD = generate_random_password()
+
+db_config = {
+    "MARIADB_DATABASE": MARIADB_DATABASE,
+    "MARIADB_USER": MARIADB_USER,
+    "MARIADB_ROOT_PASSWORD": f'{MARIADB_ROOT_PASSWORD}',
+    "MARIADB_AUTO_UPGRADE": MARIADB_AUTO_UPGRADE,
+    "MARIADB_PASSWORD": f'{MARIADB_PASSWORD}',
+}
+agent.write_envfile('database.env', db_config)
+
+
+database_config = {
+    "DB_HOST": "mariadb-app",
+    "DB_USER": MARIADB_USER,
+    "DB_PASSWORD": f'{MARIADB_PASSWORD}',
+    "DB_CHARSET": "utf8mb4",
+    "SYSTEM_DB_NAME": f'{MARIADB_DATABASE}',
+    "TENANT_DB_NAME_PERFIX": "bigcapital",
+    "MONGODB_DATABASE_URL": "mongodb://mongo-app:27017/bigcapital",
+}
+
+agent.write_envfile('database-config.env', database_config)
+
+jwt_secret = secrets.token_urlsafe(32)
+agent.write_envfile('jwt-secret.env', {"JWT_SECRET": jwt_secret})
+
+#agent.dump_env()
