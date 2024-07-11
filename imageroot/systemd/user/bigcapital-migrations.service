@@ -23,8 +23,7 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/bigcapital-migrations.pid  \
     --cidfile %t/bigcapital-migrations.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/bigcapital.pod-id --replace -d --name  bigcapital-migrations \
     --env-file=%S/state/database-config.env \
-    --workdir /app/packages/server \
-    ${SERVER_IMAGE} "./packages/server/build/commands.js system:migrate:latest && ./packages/server/build/commands.js tenants:migrate:latest"
+    ${BIGCAPITAL_MIGRATIONS_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/bigcapital-migrations.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP bigcapital-migrations
 SyslogIdentifier=%u
