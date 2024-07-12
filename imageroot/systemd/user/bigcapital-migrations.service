@@ -5,7 +5,7 @@
 
 [Unit]
 Description=Podman  bigcapital-migrations.service
-BindsTo=bigcapital.service
+Wants=bigcapital.service
 After=bigcapital.service redis-app.service mongo-app.service mariadb-app.service bigcapital-server.service bigcapital-webapp.service
 
 [Service]
