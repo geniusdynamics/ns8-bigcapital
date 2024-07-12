@@ -23,6 +23,8 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/bigcapital-server.pid \
     --cidfile %t/bigcapital-server.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/bigcapital.pod-id --replace -d --name  bigcapital-server \
     --env-file=%S/state/app.env \
+    --env-file=%S/state/database-config.env \
+    --env-file=%S/state/jwt-secret.env \
     ${SERVER_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/bigcapital-server.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP bigcapital-server
