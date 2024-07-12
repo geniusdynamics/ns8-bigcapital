@@ -1,12 +1,10 @@
-#
-# Copyright (C) 2022 Nethesis S.r.l.
+# bigcapital-migrations.service
 # SPDX-License-Identifier: GPL-3.0-or-later
-#
 
 [Unit]
-Description=Podman  bigcapital-migrations.service
-Wants=bigcapital.service
-After=bigcapital.service redis-app.service mongo-app.service mariadb-app.service bigcapital-server.service bigcapital-webapp.service
+Description=Podman bigcapital-migrations.service
+Wants=bigcapital-webapp.service
+After=bigcapital-webapp.service redis-app.service mongo-app.service mariadb-app.service bigcapital-server.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
@@ -14,22 +12,19 @@ EnvironmentFile=%S/state/environment
 EnvironmentFile=-%S/state/smarthost.env
 EnvironmentFile=-%S/state/app.env
 WorkingDirectory=%S/state
-Restart=always
-TimeoutStopSec=70
+Type=oneshot
+RemainAfterExit=yes
 ExecStartPre=/bin/mkdir -p tmp
 ExecStartPre=/bin/rm -f %t/bigcapital-migrations.pid %t/bigcapital-migrations.ctr-id
 ExecStartPre=-runagent discover-smarthost
-ExecStart=/usr/bin/podman run --conmon-pidfile %t/bigcapital-migrations.pid  \
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/bigcapital-migrations.pid \
     --cidfile %t/bigcapital-migrations.ctr-id --cgroups=no-conmon \
-    --pod-id-file %t/bigcapital.pod-id --replace -d --name  bigcapital-migrations \
+    --pod-id-file %t/bigcapital.pod-id --replace -d --name bigcapital-migrations \
     --env-file=%S/state/database-config.env \
     ${BIGCAPITAL_MIGRATIONS_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/bigcapital-migrations.ctr-id -t 10
-ExecReload=/usr/bin/podman kill -s HUP bigcapital-migrations
-SyslogIdentifier=%u
 ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/bigcapital-migrations.ctr-id
 PIDFile=%t/bigcapital-migrations.pid
-Type=forking
 
 [Install]
 WantedBy=default.target
