@@ -98,6 +98,8 @@ app_config = {
     "NEW_RELIC_LICENSE_KEY": "",
     "GOTENBERG_URL": "http//gotenberg-app:3000",
     "GOTENBERG_DOCS_URL": "http//server:3000/public/",
+    "ADMIN_EMAIL":"accounting@bigcapital.com",
+    "ADMIN_PASSWORD":"BigCapital",
     **database_config,
     **email_config,
 }
