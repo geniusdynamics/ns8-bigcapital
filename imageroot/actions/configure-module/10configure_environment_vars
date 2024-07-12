@@ -95,7 +95,7 @@ app_config = {
     "NEW_RELIC_AI_MONITORING_ENABLED": "false",
     "NEW_RELIC_CUSTOM_INSIGHTS_EVENTS_MAX_SAMPLES_STORED": "1000",
     "NEW_RELIC_SPAN_EVENTS_MAX_SAMPLES_STORED": "1000",
-    "NEW_RELIC_LICENSE_KEY": "eu01xx46da52358e4964f2e02bd6ab4aFFFFNRAL",
+    "NEW_RELIC_LICENSE_KEY": "",
     "GOTENBERG_URL": "http//gotenberg-app:3000",
     "GOTENBERG_DOCS_URL": "http//server:3000/public/",
     **database_config,
