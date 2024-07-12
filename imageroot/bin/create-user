@@ -1,0 +1,43 @@
+#!/bin/bash
+
+#
+# Copyright (C) 2022 Nethesis S.r.l.
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+set -o allexport; source app.env; set +o allexport;
+
+#wait until the server is ready
+echo "Waiting for software to be ready ..."
+sleep 120s;
+
+target=$(podman port traefik 80)
+
+# Extract the host and port from the output
+host=$(echo $target | cut -d ':' -f 1)
+port=$(echo $target | cut -d ':' -f 2)
+
+# Check if the host is determined
+if [ -z "$host" ]; then
+  echo "Host not found, exiting."
+  exit 1
+fi
+
+# Construct the URL
+# Assuming the service is available at /api/auth/register via Traefik
+url="http://${host}:${port}/api/auth/register"
+
+# Execute the curl command
+curl url \
+  -H 'accept: application/json, text/plain, */*' \
+  -H 'accept-language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7,he;q=0.6' \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+  -H 'pragma: no-cache' \
+  -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36' \
+  --data-raw '{"first_name":"accounting","last_name":"admin","email":"'${ADMIN_EMAIL}'","password":"'${ADMIN_PASSWORD}'"}' \
+  --compressed
+
+  sleep 30s;
+
+podman exec -T mariadb-app bash -c "mysql -u root -p'${DB_ROOT_PASSWORD}' -e \"USE bigcapital_system; ALTER TABLE USERS MODIFY verified tinyint(1) DEFAULT true;\""
