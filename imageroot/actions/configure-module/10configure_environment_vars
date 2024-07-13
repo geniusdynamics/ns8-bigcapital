@@ -46,7 +46,7 @@ agent.write_envfile('email.env', email_config)
 
 HOST = data.get("host", "")
 app_config = {
-    "BASE_URL": "https://" +HOST,
+    "BASE_URL": "https://"+HOST,
     "NEW_RELIC_APP_NAME":"BIGCAPITALHQ",
     "NEW_RELIC_DISTRIBUTED_TRACING_ENABLED": "false",
     "NEW_RELIC_LOG": "stdout",
