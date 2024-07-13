@@ -3,8 +3,8 @@
 
 [Unit]
 Description=Podman bigcapital-migrations.service
-Wants=bigcapital-webapp.service
-After=bigcapital-webapp.service redis-app.service mongo-app.service mariadb-app.service bigcapital-server.service
+Wants=mariadb-app.service
+After=bigcapital.service redis-app.service mongo-app.service mariadb-app.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
