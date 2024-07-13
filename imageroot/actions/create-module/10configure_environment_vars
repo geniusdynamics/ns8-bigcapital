@@ -42,7 +42,7 @@ database_config = {
     "DB_USER": MARIADB_USER,
     "DB_PASSWORD": f'{MARIADB_PASSWORD}',
     "DB_CHARSET": "utf8mb4",
-    "SYSTEM_DB_HOST": f'{MARIADB_DATABASE}',
+    "SYSTEM_DB_HOST": "mariadb-app",
     "SYSTEM_DB_USER": MARIADB_USER,
     "SYSTEM_DB_PASSWORD": f'{MARIADB_PASSWORD}',
     "SYSTEM_DB_NAME": f'{MARIADB_DATABASE}',

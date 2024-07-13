@@ -18,24 +18,7 @@ data = json.load(sys.stdin)
 # we read a json stdin {"vars1":true, "var2":"foo", "vars3": 3} and we writ it to .config/state/environment
 # Upper case to set environment variable and minor case to read from stdin
 
-# Configure database configurations
 
-MARIADB_DATABASE = data.get("MARIADB_DATABASE","bigcapitalhq")
-MARIADB_USER = data.get("MARIADB_USER","bigcapital")
-MARIADB_ROOT_PASSWORD = data.get("MARIADB_ROOT_PASSWORD","Bigcapital,1234")
-MARIADB_AUTO_UPGRADE = data.get("MARIADB_AUTO_UPGRADE","1")
-MARIADB_PASSWORD = data.get("MARIADB_PASSWORD","Bigcapital,1234")
-
-db_config = {
-    "MARIADB_DATABASE": MARIADB_DATABASE,
-    "MARIADB_USER": MARIADB_USER,
-    "MARIADB_ROOT_PASSWORD": f'{MARIADB_ROOT_PASSWORD}',
-    "MARIADB_AUTO_UPGRADE": MARIADB_AUTO_UPGRADE,
-    "MARIADB_PASSWORD": f'{MARIADB_PASSWORD}',
-}
-agent.write_envfile('database.env', db_config)
-
-# Configure the application configurations
 # Configure email configurations
 rdb = agent.redis_connect(use_replica=True)
 smtp_settings = agent.get_smarthost_settings(rdb)
@@ -58,45 +41,12 @@ email_config  = {
     "MAIL_FROM_ADDRESS": data.get("MAIL_FROM_ADDRESS", f"{smtp_settings['username']}"),
 }
 agent.write_envfile('email.env', email_config)
-# # Database
-# - DB_HOST=mysql
-# - DB_USER=${DB_USER}
-# - DB_PASSWORD=${DB_PASSWORD}
-# - DB_CHARSET=${DB_CHARSET}
-# # System database
-# - SYSTEM_DB_NAME=${SYSTEM_DB_NAME}
-#
-# # Tenants databases
-# - TENANT_DB_NAME_PERFIX=${TENANT_DB_NAME_PERFIX}
-#
-# # Authentication
-# - JWT_SECRET=${JWT_SECRET}
-#
-# # MongoDB
-# - MONGODB_DATABASE_URL=mongodb://mongo/bigcapital
-#
-database_config = {
-    "DB_HOST": "mysql",
-    "DB_USER": MARIADB_USER,
-    "DB_PASSWORD": f'{MARIADB_PASSWORD}',
-    "DB_CHARSET": "utf8mb4",
-    "SYSTEM_DB_HOST": f'{MARIADB_DATABASE}',
-    "SYSTEM_DB_USER": MARIADB_USER,
-    "SYSTEM_DB_PASSWORD": f'{MARIADB_PASSWORD}',
-    "SYSTEM_DB_NAME": f'{MARIADB_DATABASE}',
-    "SYSTEM_DB_CHARSET": "utf8mb4",
-    "TENANT_DB_NAME_PERFIX": "tn",
-    "TENANT_DB_HOST": "mysql",
-    "TENANT_DB_USER": MARIADB_USER,
-    "TENANT_DB_PASSWORD": f'{MARIADB_PASSWORD}',
-    "TENANT_DB_CHARSET": "utf8mb4",
-    "MONGODB_DATABASE_URL": "mongodb://localhost:27017/bigcapital",
-}
-jwt_secret = secrets.token_hex(32)
+
+
+
 HOST = data.get("host", "")
 app_config = {
-    "JWT_SECRET": jwt_secret,
-    "BASE_URL": HOST,
+    "BASE_URL": "https://" +HOST,
     "NEW_RELIC_APP_NAME":"BIGCAPITALHQ",
     "NEW_RELIC_DISTRIBUTED_TRACING_ENABLED": "false",
     "NEW_RELIC_LOG": "stdout",
@@ -112,7 +62,6 @@ app_config = {
     "SIGNUP_ALLOWED_DOMAINS":"",
     "SIGNUP_ALLOWED_EMAILS":"",
     "SIGNUP_EMAIL_CONFIRMATION":"true",
-    **database_config,
     **email_config,
 }
 agent.write_envfile('app.env', app_config)
