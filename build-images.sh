@@ -14,7 +14,7 @@ images=()
 repobase="${REPOBASE:-ghcr.io/geniusdynamics}"
 # Configure the image name
 reponame="bigcapital"
-APP_VERSION="v0.18.0"
+APP_VERSION="v0.18.4"
 # Create a new empty container image
 container=$(buildah from scratch)
 
