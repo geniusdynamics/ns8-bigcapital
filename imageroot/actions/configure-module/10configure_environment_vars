@@ -108,6 +108,10 @@ app_config = {
     "GOTENBERG_DOCS_URL": "http//server:3000/public/",
     "ADMIN_EMAIL":"accounting@bigcapital.com",
     "ADMIN_PASSWORD":"BigCapital",
+    "SIGNUP_DISABLED":"false",
+    "SIGNUP_ALLOWED_DOMAINS":"",
+    "SIGNUP_ALLOWED_EMAILS":"",
+    "SIGNUP_EMAIL_CONFIRMATION":"true",
     **database_config,
     **email_config,
 }
