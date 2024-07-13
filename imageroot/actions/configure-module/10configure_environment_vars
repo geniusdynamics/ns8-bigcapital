@@ -87,8 +87,8 @@ database_config = {
     "SYSTEM_DB_CHARSET": "utf8mb4",
     "TENANT_DB_NAME_PERFIX": "tn",
     "TENANT_DB_HOST"= "mysql",
-    "TENANT_DB_USER"= MARIADB_USER
-    "TENANT_DB_PASSWORD"= f'{MARIADB_PASSWORD}
+    "TENANT_DB_USER"= MARIADB_USER,
+    "TENANT_DB_PASSWORD"= f'{MARIADB_PASSWORD}',
     "TENANT_DB_CHARSET"= "utf8mb4",
     "MONGODB_DATABASE_URL": "mongodb://localhost:27017/bigcapital",
 }
