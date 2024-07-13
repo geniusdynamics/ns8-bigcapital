@@ -3,7 +3,7 @@
 
 [Unit]
 Description=Podman bigcapital-migrations.service
-Wants=bigcapital-webapp.service
+Wants=bigcapital-server.service
 After=bigcapital-webapp.service redis-app.service mongo-app.service mariadb-app.service bigcapital-server.service
 
 [Service]
