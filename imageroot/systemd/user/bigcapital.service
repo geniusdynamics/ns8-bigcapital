@@ -11,6 +11,7 @@
 [Unit]
 Description=Podman bigcapital.service
 Requires=redis-app.service mongo-app.service mariadb-app.service bigcapital-webapp.service
+Wants=bigcapital-server.service bigcapital-migrations.service
 Before=redis-app.service mongo-app.service mariadb-app.service bigcapital-server.service bigcapital-webapp.service bigcapital-migrations.service
 
 [Service]
