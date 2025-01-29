@@ -14,7 +14,7 @@ import secrets
 # If parsing fails, output everything to stderr
 data = json.load(sys.stdin)
 
-#This is specific to you module, so you need to change it accordingly.
+# This is specific to you module, so you need to change it accordingly.
 # we read a json stdin {"vars1":true, "var2":"foo", "vars3": 3} and we writ it to .config/state/environment
 # Upper case to set environment variable and minor case to read from stdin
 
@@ -31,40 +31,41 @@ smtp_settings = agent.get_smarthost_settings(rdb)
 # - MAIL_SECURE=${MAIL_SECURE}
 # - MAIL_FROM_NAME=${MAIL_FROM_NAME}
 # - MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
-email_config  = {
-    "MAIL_HOST": smtp_settings['host'],
-    "MAIL_USERNAME": smtp_settings['username'],
-    "MAIL_PASSWORD": smtp_settings['password'],
-    "MAIL_PORT": smtp_settings['port'],
-    "MAIL_SECURE": smtp_settings['encrypt_smtp'],
-    "MAIL_FROM_NAME": data.get("MAIL_FROM_NAME", f"BigcapitalHQ {smtp_settings['username']}"),
+email_config = {
+    "MAIL_HOST": smtp_settings["host"],
+    "MAIL_USERNAME": smtp_settings["username"],
+    "MAIL_PASSWORD": smtp_settings["password"],
+    "MAIL_PORT": smtp_settings["port"],
+    "MAIL_SECURE": smtp_settings["encrypt_smtp"],
+    "MAIL_FROM_NAME": data.get(
+        "MAIL_FROM_NAME", f"BigcapitalHQ {smtp_settings['username']}"
+    ),
     "MAIL_FROM_ADDRESS": data.get("MAIL_FROM_ADDRESS", f"{smtp_settings['username']}"),
 }
-agent.write_envfile('email.env', email_config)
-
+agent.write_envfile("email.env", email_config)
 
 
 HOST = data.get("host", "")
 app_config = {
-    "BASE_URL": "https://"+HOST,
-    "NEW_RELIC_APP_NAME":"BIGCAPITALHQ",
-    "NEW_RELIC_DISTRIBUTED_TRACING_ENABLED": "false",
-    "NEW_RELIC_LOG": "stdout",
-    "NEW_RELIC_AI_MONITORING_ENABLED": "false",
-    "NEW_RELIC_CUSTOM_INSIGHTS_EVENTS_MAX_SAMPLES_STORED": "1000",
-    "NEW_RELIC_SPAN_EVENTS_MAX_SAMPLES_STORED": "1000",
+    "BASE_URL": "https://" + HOST,
+    "NEW_RELIC_APP_NAME": "",
+    "NEW_RELIC_DISTRIBUTED_TRACING_ENABLED": "",
+    "NEW_RELIC_LOG": "",
+    "NEW_RELIC_AI_MONITORING_ENABLED": "",
+    "NEW_RELIC_CUSTOM_INSIGHTS_EVENTS_MAX_SAMPLES_STORED": "",
+    "NEW_RELIC_SPAN_EVENTS_MAX_SAMPLES_STORED": "",
     "NEW_RELIC_LICENSE_KEY": "",
-    "GOTENBERG_URL": "http//gotenberg-app:3000",
-    "GOTENBERG_DOCS_URL": "http//server:3000/public/",
-    "ADMIN_EMAIL":"accounting@bigcapital.com",
-    "ADMIN_PASSWORD":"BigCapital",
-    "SIGNUP_DISABLED":"false",
-    "SIGNUP_ALLOWED_DOMAINS":"",
-    "SIGNUP_ALLOWED_EMAILS":"",
-    "SIGNUP_EMAIL_CONFIRMATION":"true",
+    "GOTENBERG_URL": "http://gotenberg-app:3000",
+    "GOTENBERG_DOCS_URL": "http://server:3000/public/",
+    "ADMIN_EMAIL": "accounting@bigcapital.com",
+    "ADMIN_PASSWORD": "BigCapital",
+    "SIGNUP_DISABLED": "false",
+    "SIGNUP_ALLOWED_DOMAINS": "",
+    "SIGNUP_ALLOWED_EMAILS": "",
+    "SIGNUP_EMAIL_CONFIRMATION": "true",
     **email_config,
 }
-agent.write_envfile('app.env', app_config)
+agent.write_envfile("app.env", app_config)
 # # Application
 # - BASE_URL=${BASE_URL}
 #
@@ -120,7 +121,6 @@ agent.write_envfile('app.env', app_config)
 # - S3_BUCKET=${S3_BUCKET}
 
 
-
 # Make sure everything is saved inside the environment file
 # just before starting systemd unit
-#agent.dump_env()
+# agent.dump_env()
