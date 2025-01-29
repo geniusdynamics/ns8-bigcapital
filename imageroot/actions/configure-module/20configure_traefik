@@ -43,7 +43,8 @@ response = agent.tasks.run(
         'url':  'http://127.0.0.1:' + os.environ["TCP_PORT"],
         'host': host,
         'http2https': h2hs,
-        'lets_encrypt': le
+        'lets_encrypt': le,
+        'headers': {"request":{"X-Forwarded-Proto": "https"}}
     },
 )
 
