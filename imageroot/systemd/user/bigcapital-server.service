@@ -11,21 +11,19 @@ After=bigcapital.service redis-app.service mongo-app.service mariadb-app.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
-EnvironmentFile=%S/state/environment
-EnvironmentFile=-%S/state/smarthost.env
-EnvironmentFile=-%S/state/app.env
-WorkingDirectory=%S/state
+EnvironmentFile=%E/state/environment
+EnvironmentFile=-%E/state/app.env
+WorkingDirectory=%E/state
 Restart=always
 TimeoutStopSec=70
 ExecStartPre=/bin/mkdir -p tmp
 ExecStartPre=/bin/rm -f %t/bigcapital-server.pid %t/bigcapital-server.ctr-id
-ExecStartPre=-runagent discover-smarthost
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/bigcapital-server.pid \
     --cidfile %t/bigcapital-server.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/bigcapital.pod-id --replace -d --name  bigcapital-server \
-    --env-file=%S/state/app.env \
-    --env-file=%S/state/database-config.env \
-    --env-file=%S/state/jwt-secret.env \
+    --env-file=%E/state/app.env \
+    --env-file=%E/state/database-config.env \
+    --env-file=%E/state/jwt-secret.env \
     ${SERVER_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/bigcapital-server.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP bigcapital-server
