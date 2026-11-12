@@ -10,10 +10,9 @@ After=bigcapital.service redis-app.service mongo-app.service mariadb-app.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
-EnvironmentFile=%S/state/environment
-EnvironmentFile=-%S/state/smarthost.env
-EnvironmentFile=-%S/state/app.env
-WorkingDirectory=%S/state
+EnvironmentFile=%E/state/environment
+EnvironmentFile=-%E/state/app.env
+WorkingDirectory=%E/state
 Restart=no
 TimeoutStopSec=70
 ExecStartPre=/bin/mkdir -p tmp
