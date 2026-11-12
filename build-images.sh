@@ -43,14 +43,14 @@ buildah add "${container}" ui/dist /ui
 # Select you image(s) with the label org.nethserver.images
 # ghcr.io/xxxxx is the GitHub container registry or your own registry or docker.io for Docker Hub
 # The image tag is set to latest by default, but can be overridden with the IMAGETAG environment variable
-# --label="org.nethserver.images=docker.io/mariadb:10.11.5 docker.io/roundcube/roundcubemail:1.6.4-apache"
+# --label="org.nethserver.images=docker.io/mariadb:13.0.2 docker.io/roundcube/roundcubemail:1.6.4-apache"
 # rootfull=0 === rootless container
 # tcp-ports-demand=1 number of tcp Port to reserve , 1 is the minimum, can be udp or tcp
 buildah config --entrypoint=/ \
 	--label="org.nethserver.authorizations=traefik@node:routeadm" \
 	--label="org.nethserver.tcp-ports-demand=1" \
 	--label="org.nethserver.rootfull=0" \
-	--label="org.nethserver.images=docker.io/redis:latest docker.io/mariadb:10.11.5 docker.io/mongo:latest docker.io/bigcapitalhq/webapp:${APP_VERSION} docker.io/bigcapitalhq/server:${APP_VERSION} docker.io/geniusdynamics/bigcapital-migrations:latest docker.io/geniusdynamics/bigcapital-webapp:latest" \
+	--label="org.nethserver.images=docker.io/redis:8.10.3 docker.io/mariadb:13.0.2 docker.io/mongo:9.0.8 docker.io/bigcapitalhq/webapp:${APP_VERSION} docker.io/bigcapitalhq/server:${APP_VERSION} docker.io/geniusdynamics/bigcapital-migrations:latest docker.io/geniusdynamics/bigcapital-webapp:v1.0.0" \
 	"${container}"
 # Commit the image
 buildah commit "${container}" "${repobase}/${reponame}"
