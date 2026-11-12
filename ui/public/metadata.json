@@ -3,20 +3,20 @@
   "description": {
     "en": "Online accounting software, built to automate business financial processes."
   },
-  "categories": ["financial", "accounting", "business"],
+  "categories": [
+    "financial",
+    "accounting",
+    "business"
+  ],
   "authors": [
     {
-      "name": "Kemboi Elvis",
-      "email": "kemboielvis@genius.ke"
-    },
-    {
-        "name": "Martin Bhuong",
-        "email": "martin@genius.ke"
+      "name": "Genius Dynamics",
+      "email": "support@genius.ke"
     }
   ],
   "docs": {
     "documentation_url": "https://docs.bigcapital.app/",
-    "bug_url": "https://github.com/geniusdynamics/dev",
+    "bug_url": "https://github.com/geniusdynamics/ns8-bigcapital/issues",
     "code_url": "https://github.com/geniusdynamics/ns8-bigcapital"
   },
   "source": "ghcr.io/geniusdynamics/bigcapital"

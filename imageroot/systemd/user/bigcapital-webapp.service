@@ -9,14 +9,12 @@ BindsTo=bigcapital.service
 After=bigcapital.service redis-app.service mongo-app.service mariadb-app.service 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
-EnvironmentFile=%S/state/environment
-EnvironmentFile=-%S/state/smarthost.env
-WorkingDirectory=%S/state
+EnvironmentFile=%E/state/environment
+WorkingDirectory=%E/state
 Restart=always
 TimeoutStopSec=70
 ExecStartPre=/bin/mkdir -p tmp
 ExecStartPre=/bin/rm -f %t/bigcapital-webapp.pid %t/bigcapital-webapp.ctr-id
-ExecStartPre=-runagent discover-smarthost
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/bigcapital-webapp.pid \
     --cidfile %t/bigcapital-webapp.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/bigcapital.pod-id --replace -d --name  bigcapital-webapp \
