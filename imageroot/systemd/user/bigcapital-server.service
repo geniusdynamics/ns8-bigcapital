@@ -5,16 +5,16 @@
 
 [Unit]
 Description=Podman  bigcapital-server.service
-BindsTo=bigcapital.service
-Wants=bigcapital-migrations.service
+Wants=bigcapital.service bigcapital-migrations.service
 After=bigcapital.service redis-app.service mongo-app.service mariadb-app.service bigcapital-migrations.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
-EnvironmentFile=%E/state/environment
-EnvironmentFile=-%E/state/app.env
-WorkingDirectory=%E/state
-Restart=always
+EnvironmentFile=%S/state/environment
+EnvironmentFile=-%S/state/smarthost.env
+EnvironmentFile=-%S/state/app.env
+WorkingDirectory=%S/state
+Restart=no
 TimeoutStopSec=70
 ExecStartPre=/bin/mkdir -p tmp
 ExecStartPre=/bin/rm -f %t/bigcapital-server.pid %t/bigcapital-server.ctr-id
