@@ -1,0 +1,33 @@
+#
+# Copyright (C) 2026 Genius Dynamics
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+#
+# Gotenberg renders the PDF documents (invoices, reports). Port 3000 is
+# taken by the server in the pod, so Gotenberg listens on 3001.
+#
+[Unit]
+Description=Podman gotenberg-app.service
+BindsTo=bigcapital.service
+After=bigcapital.service
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+EnvironmentFile=%E/state/environment
+Restart=always
+TimeoutStopSec=70
+ExecStartPre=/bin/rm -f %t/gotenberg-app.pid %t/gotenberg-app.ctr-id
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/gotenberg-app.pid \
+    --cidfile %t/gotenberg-app.ctr-id --cgroups=no-conmon \
+    --pod-id-file %t/bigcapital.pod-id --replace -d --name gotenberg-app \
+    ${GOTENBERG_IMAGE} \
+    gotenberg --api-port=3001
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/gotenberg-app.ctr-id -t 10
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/gotenberg-app.ctr-id
+SyslogIdentifier=%u
+PIDFile=%t/gotenberg-app.pid
+Type=forking
+
+[Install]
+WantedBy=default.target

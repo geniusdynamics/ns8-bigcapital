@@ -35,18 +35,30 @@ default_traefik_id = agent.resolve_agent_id('traefik@node')
 if default_traefik_id is None:
     sys.exit(2)
 
-response = agent.tasks.run(
-    agent_id=agent.resolve_agent_id('traefik@node'),
-    action='set-route',
-    data={
-        'instance': os.environ['MODULE_ID'],
-        'url':  'http://127.0.0.1:' + os.environ["TCP_PORT"],
+
+# Two TCP ports are reserved: the web application and the API server
+web_port, api_port = os.environ["TCP_PORTS"].split(",")[:2]
+agent.set_env("TCP_PORT_WEB", web_port)
+agent.set_env("TCP_PORT_API", api_port)
+agent.dump_env()
+
+# The upstream envoy proxy sends /api to the server and the rest to the web
+# application: do the same with two Traefik routes on the same host
+routes = [
+    (os.environ['MODULE_ID'], web_port, None),
+    (os.environ['MODULE_ID'] + '-api', api_port, '/api'),
+]
+for instance, port, path in routes:
+    route = {
+        'instance': instance,
+        'url': 'http://127.0.0.1:' + port,
         'host': host,
         'http2https': h2hs,
         'lets_encrypt': le,
-        'headers': {"request":{"X-Forwarded-Proto": "https"}}
-    },
-)
-
-# Check if traefik configuration has been successfull
-agent.assert_exp(response['exit_code'] == 0)
+        'headers': {"request": {"X-Forwarded-Proto": "https"}},
+    }
+    if path:
+        route['path'] = path
+        route['strip_prefix'] = False
+    response = agent.tasks.run(agent_id=default_traefik_id, action='set-route', data=route)
+    agent.assert_exp(response['exit_code'] == 0, f"The traefik set-route task failed for {instance}")

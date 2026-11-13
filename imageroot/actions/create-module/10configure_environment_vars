@@ -38,26 +38,29 @@ agent.write_envfile('database.env', db_config)
 
 
 database_config = {
-    "DB_HOST": "mariadb-app",
+    "DB_HOST": "127.0.0.1",
     "DB_USER": MARIADB_USER,
     "DB_PASSWORD": f'{MARIADB_PASSWORD}',
     "DB_CHARSET": "utf8mb4",
-    "SYSTEM_DB_HOST": "mariadb-app",
+    "SYSTEM_DB_HOST": "127.0.0.1",
     "SYSTEM_DB_USER": MARIADB_USER,
     "SYSTEM_DB_PASSWORD": f'{MARIADB_PASSWORD}',
     "SYSTEM_DB_NAME": f'{MARIADB_DATABASE}',
     "SYSTEM_DB_CHARSET": "utf8mb4",
     "TENANT_DB_NAME_PERFIX": "tn",
-    "TENANT_DB_HOST": "mariadb-app",
+    "TENANT_DB_HOST": "127.0.0.1",
     "TENANT_DB_USER": MARIADB_USER,
     "TENANT_DB_PASSWORD": f'{MARIADB_PASSWORD}',
     "TENANT_DB_CHARSET": "utf8mb4",
-    "MONGODB_DATABASE_URL": "mongodb://mongo-app:27017/bigcapital",
 }
 
 agent.write_envfile('database-config.env', database_config)
 
 jwt_secret = secrets.token_urlsafe(32)
-agent.write_envfile('jwt-secret.env', {"JWT_SECRET": jwt_secret})
+agent.write_envfile('jwt-secret.env', {
+    "JWT_SECRET": jwt_secret,
+    "APP_JWT_SECRET": jwt_secret,
+    "TWO_FACTOR_ENCRYPTION_KEY": secrets.token_hex(32),
+})
 
 #agent.dump_env()
