@@ -51,6 +51,7 @@ buildah config --entrypoint=/ \
 	--label="org.nethserver.authorizations=traefik@node:routeadm" \
 	--label="org.nethserver.tcp-ports-demand=1" \
 	--label="org.nethserver.rootfull=0" \
+    --label="org.nethserver.min-core=3.0.0" \
 	--label="org.nethserver.images=docker.io/redis:8.10.3 docker.io/mariadb:13.0.2 docker.io/mongo:9.0.8 docker.io/bigcapitalhq/webapp:${APP_VERSION} docker.io/bigcapitalhq/server:${APP_VERSION} docker.io/geniusdynamics/bigcapital-migrations:latest docker.io/geniusdynamics/bigcapital-webapp:v1.0.0" \
 	"${container}"
 # Commit the image
