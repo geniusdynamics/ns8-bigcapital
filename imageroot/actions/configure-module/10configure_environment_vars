@@ -21,6 +21,7 @@ data = json.load(sys.stdin)
 
 # Configure email configurations
 rdb = agent.redis_connect(use_replica=True)
+smtp_settings = agent.get_smarthost_settings(rdb)
 # environment:
 # # Mail
 # - MAIL_HOST=${MAIL_HOST}
