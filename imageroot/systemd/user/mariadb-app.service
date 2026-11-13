@@ -6,7 +6,7 @@
 [Unit]
 Description=Podman mariadb-app.service
 BindsTo=bigcapital.service
-After=bigcapital.service redis-app.service mongo-app.service
+After=bigcapital.service redis-app.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
@@ -25,7 +25,10 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/mariadb-app.pid \
     ${MARIADB_IMAGE} \
     --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 ExecStartPost=/usr/bin/podman exec  mariadb-app /bin/bash -c 'printf "[client] \npassword=${MARIADB_ROOT_PASSWORD}" > /root/.my.cnf'
-ExecStartPost=/usr/bin/podman exec mariadb-app /bin/bash -c "while ! mysqladmin ping -h localhost -P 3306 -u root; do sleep 1; done"
+ExecStartPost=/usr/bin/podman exec mariadb-app /bin/bash -c "while ! mariadb-admin ping -h localhost -P 3306 -u root; do sleep 1; done"
+# The server creates one database per tenant: grant the application user
+# all privileges, as the upstream Bigcapital MariaDB image does
+ExecStartPost=/usr/bin/podman exec mariadb-app mariadb -u root -e "GRANT ALL PRIVILEGES ON *.* TO '${MARIADB_USER}'@'%%' WITH GRANT OPTION; FLUSH PRIVILEGES"
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/mariadb-app.ctr-id -t 10
 ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/mariadb-app.ctr-id
 ExecReload=/usr/bin/podman kill -s HUP mariadb-app

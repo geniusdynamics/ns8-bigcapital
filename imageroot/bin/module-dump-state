@@ -11,12 +11,13 @@ if ! systemctl --user -q is-active bigcapital.service; then
     exit 0
 fi
 
-podman exec mariadb-app mysqldump \
-        --databases bigcapitalhq \
+dbs=$(podman exec mariadb-app mariadb -u root -N -e "SHOW DATABASES" | grep -E "^(bigcapitalhq|tn)" | tr "\n" " ")
+# shellcheck disable=SC2086
+podman exec mariadb-app mariadb-dump \
+        --databases ${dbs} \
         --default-character-set=utf8mb4 \
         --skip-dump-date \
         --ignore-table=mysql.event \
         --single-transaction \
         --quick \
         --add-drop-table  > bigcapital.sql
-podman exec mongo-app mongodump --archive > bigcapital.archive

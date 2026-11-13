@@ -40,15 +40,15 @@ EOF
 |---|---|
 | `docker.io/redis` | `8.10.3` |
 | `docker.io/mariadb` | `13.0.2` |
-| `docker.io/mongo` | `9.0.8` |
-| `docker.io/bigcapitalhq/webapp` | `v0.22.0` |
-| `docker.io/bigcapitalhq/server` | `v0.22.0` |
-| `docker.io/geniusdynamics/bigcapital-migrations` | `latest` |
-| `docker.io/geniusdynamics/bigcapital-webapp` | `v1.0.0` |
+| `docker.io/gotenberg/gotenberg` | `8.40.0` |
+| `docker.io/bigcapitalhq/webapp` | `${APP_VERSION}` |
+| `docker.io/bigcapitalhq/server` | `${APP_VERSION}` |
+
+Requires NS8 core `3.0.0` or newer.
 
 ## Network and access
 
-- Reserves 1 TCP port(s) on the node. The web application is published through Traefik on the configured host name.
+- Reserves 2 TCP port(s) on the node. The web application is published through Traefik on the configured host name.
 - Runs rootless.
 - Declares these NS8 authorizations: `traefik@node:routeadm`.
 
@@ -57,11 +57,6 @@ EOF
 The following paths are included in the NS8 backup (`imageroot/etc/state-include.conf`):
 
 - `state/bigcapital.sql`
-- `volumes/bigcapital-app`
-- `volumes/mongo-app`
-- `volumes/mongo-configdb`
-- `volumes/mysql-data`
-- `volumes/envoy`
 
 ## Services
 
@@ -69,8 +64,8 @@ The following paths are included in the NS8 backup (`imageroot/etc/state-include
 - `bigcapital-server.service`
 - `bigcapital-webapp.service`
 - `bigcapital.service`
+- `gotenberg-app.service`
 - `mariadb-app.service`
-- `mongo-app.service`
 - `redis-app.service`
 
 ## Get the configuration
@@ -97,22 +92,6 @@ Continuous integration:
 The suite installs the module, configures a host name, checks that the web application answers through Traefik, takes UI screenshots and removes the module.
 
 Run it locally with the NS8 standard infrastructure described in the [ns8-github-actions README](https://github.com/NethServer/ns8-github-actions/blob/v1/README.md#running-tests-locally).
-
-## Open items
-
-Found by the NS8 module standards check. These must be resolved before a stable release:
-
-- mariadb-app.service: uses %S/state, kickstart uses %E/state
-- bigcapital-server.service: uses %S/state, kickstart uses %E/state
-- README still has the template boilerplate
-- mariadb-app.service: %S/state changed to %E/state (review the bind mounts that remain)
-- bigcapital-server.service: %S/state changed to %E/state (review the bind mounts that remain)
-- imageroot/systemd/user/bigcapital-server.service: smarthost lines removed, check the unit still starts
-- BIGCAPITAL_MIGRATIONS_IMAGE is used by the module but no image in the label provides it: leftover from the template?
-- BIGCAPITAL_WEBAPP_IMAGE is used by the module but no image in the label provides it: leftover from the template?
-- MONGO_IMAGE is used by the module but no image in the label provides it: leftover from the template?
-- REDIS_IMAGE is used by the module but no image in the label provides it: leftover from the template?
-- SERVER_IMAGE is used by the module but no image in the label provides it: leftover from the template?
 
 ## Upstream
 

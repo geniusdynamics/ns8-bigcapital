@@ -40,4 +40,4 @@ curl url \
 
   sleep 30s;
 
-podman exec -T mariadb-app bash -c "mysql -u root -p'${DB_ROOT_PASSWORD}' -e \"USE bigcapital_system; ALTER TABLE USERS MODIFY verified tinyint(1) DEFAULT true;\""
+podman exec -T mariadb-app bash -c "mariadb -u root -p'${DB_ROOT_PASSWORD}' -e \"USE bigcapital_system; ALTER TABLE USERS MODIFY verified tinyint(1) DEFAULT true;\""

@@ -1,28 +1,26 @@
 #
-# Copyright (C) 2022 Nethesis S.r.l.
+# Copyright (C) 2026 Genius Dynamics
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 
 [Unit]
-Description=Podman  bigcapital-webapp.service
+Description=Podman bigcapital-webapp.service
 BindsTo=bigcapital.service
-After=bigcapital.service redis-app.service mongo-app.service mariadb-app.service 
+After=bigcapital.service
+
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
 EnvironmentFile=%E/state/environment
-WorkingDirectory=%E/state
 Restart=always
 TimeoutStopSec=70
-ExecStartPre=/bin/mkdir -p tmp
 ExecStartPre=/bin/rm -f %t/bigcapital-webapp.pid %t/bigcapital-webapp.ctr-id
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/bigcapital-webapp.pid \
     --cidfile %t/bigcapital-webapp.ctr-id --cgroups=no-conmon \
-    --pod-id-file %t/bigcapital.pod-id --replace -d --name  bigcapital-webapp \
-    ${BIGCAPITAL_WEBAPP_IMAGE}
+    --pod-id-file %t/bigcapital.pod-id --replace -d --name bigcapital-webapp \
+    ${WEBAPP_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/bigcapital-webapp.ctr-id -t 10
-ExecReload=/usr/bin/podman kill -s HUP bigcapital-webapp
-SyslogIdentifier=%u
 ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/bigcapital-webapp.ctr-id
+SyslogIdentifier=%u
 PIDFile=%t/bigcapital-webapp.pid
 Type=forking
 

@@ -1,18 +1,18 @@
 #
-# Copyright (C) 2022 Nethesis S.r.l.
+# Copyright (C) 2026 Genius Dynamics
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 
 #
-# This systemd unit starts a bigcapital instance using Podman.
-# Most parts of this file come from podman-generate-systemd.
+# Pod of the Bigcapital instance. The web application listens on port 80
+# and the API server on port 3000; Traefik routes /api to the server and
+# everything else to the web application, as the upstream envoy proxy does.
 #
-
 [Unit]
 Description=Podman bigcapital.service
-Requires=redis-app.service mongo-app.service mariadb-app.service bigcapital-webapp.service
+Requires=redis-app.service mariadb-app.service gotenberg-app.service bigcapital-webapp.service
 Wants=bigcapital-server.service bigcapital-migrations.service
-Before=redis-app.service mongo-app.service mariadb-app.service bigcapital-server.service bigcapital-webapp.service bigcapital-migrations.service
+Before=redis-app.service mariadb-app.service gotenberg-app.service bigcapital-server.service bigcapital-webapp.service bigcapital-migrations.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
@@ -23,7 +23,9 @@ ExecStartPre=/bin/rm -f %t/bigcapital.pid %t/bigcapital.pod-id
 ExecStartPre=/usr/bin/podman pod create --infra-conmon-pidfile %t/bigcapital.pid \
     --pod-id-file %t/bigcapital.pod-id \
     --name bigcapital \
-    --publish 127.0.0.1:${TCP_PORT}:3000 \
+    --sysctl net.ipv4.ip_unprivileged_port_start=0 \
+    --publish 127.0.0.1:${TCP_PORT_WEB}:80 \
+    --publish 127.0.0.1:${TCP_PORT_API}:3000 \
     --replace
 ExecStart=/usr/bin/podman pod start --pod-id-file %t/bigcapital.pod-id
 ExecStop=/usr/bin/podman pod stop --ignore --pod-id-file %t/bigcapital.pod-id -t 10

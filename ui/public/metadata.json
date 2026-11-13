@@ -1,12 +1,11 @@
 {
   "name": "bigcapital",
   "description": {
-    "en": "Online accounting software, built to automate business financial processes."
+    "en": "Online accounting software, built to automate business financial processes.",
+    "it": "Software di contabilità online per automatizzare i processi finanziari dell'azienda."
   },
   "categories": [
-    "financial",
-    "accounting",
-    "business"
+    "office"
   ],
   "authors": [
     {

@@ -1,28 +1,31 @@
-# bigcapital-migrations.service
+#
+# Copyright (C) 2026 Genius Dynamics
 # SPDX-License-Identifier: GPL-3.0-or-later
+#
 
+#
+# Run the system and tenant database migrations with the server image, as
+# the upstream migration image does, before the server starts.
+#
 [Unit]
-Description=Podman bigcapital-migrations.service
-Wants=mariadb-app.service
-After=bigcapital.service redis-app.service mongo-app.service mariadb-app.service
+Description=Bigcapital database migrations
+BindsTo=bigcapital.service
+Requires=mariadb-app.service
+After=bigcapital.service mariadb-app.service
 
 [Service]
-Environment=PODMAN_SYSTEMD_UNIT=%n
-EnvironmentFile=%E/state/environment
-EnvironmentFile=-%E/state/app.env
-WorkingDirectory=%E/state
 Type=oneshot
 RemainAfterExit=yes
-ExecStartPre=/bin/mkdir -p tmp
-ExecStartPre=/bin/rm -f %t/bigcapital-migrations.pid %t/bigcapital-migrations.ctr-id
-ExecStart=/usr/bin/podman run --conmon-pidfile %t/bigcapital-migrations.pid \
-    --cidfile %t/bigcapital-migrations.ctr-id --cgroups=no-conmon \
-    --pod-id-file %t/bigcapital.pod-id --replace -d --name bigcapital-migrations \
+Environment=PODMAN_SYSTEMD_UNIT=%n
+EnvironmentFile=%E/state/environment
+TimeoutStartSec=900
+ExecStart=/usr/bin/podman run --rm --name bigcapital-migrations \
+    --pod-id-file %t/bigcapital.pod-id \
     --env-file=%E/state/database-config.env \
-    ${BIGCAPITAL_MIGRATIONS_IMAGE}
-ExecStop=/usr/bin/podman stop --ignore --cidfile %t/bigcapital-migrations.ctr-id -t 10
-ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/bigcapital-migrations.ctr-id
-PIDFile=%t/bigcapital-migrations.pid
+    --workdir=/app/packages/server \
+    ${SERVER_IMAGE} \
+    sh -c "node dist/cli.js system:migrate:latest && node dist/cli.js tenants:migrate:latest"
+SyslogIdentifier=%u
 
 [Install]
 WantedBy=default.target
