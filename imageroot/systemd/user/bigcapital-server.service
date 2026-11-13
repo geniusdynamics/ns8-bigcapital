@@ -5,8 +5,9 @@
 
 [Unit]
 Description=Podman  bigcapital-server.service
-Wants=bigcapital.service bigcapital-migrations.service
-After=bigcapital.service redis-app.service mongo-app.service mariadb-app.service bigcapital-migrations.service
+BindsTo=bigcapital.service
+Requires=bigcapital-migrations.service
+After=bigcapital.service redis-app.service mariadb-app.service gotenberg-app.service bigcapital-migrations.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n

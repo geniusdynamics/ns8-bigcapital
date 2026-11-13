@@ -21,6 +21,7 @@ data = json.load(sys.stdin)
 
 # Configure email configurations
 rdb = agent.redis_connect(use_replica=True)
+smtp_settings = agent.get_smarthost_settings(rdb)
 # environment:
 # # Mail
 # - MAIL_HOST=${MAIL_HOST}
@@ -54,14 +55,19 @@ app_config = {
     "NEW_RELIC_CUSTOM_INSIGHTS_EVENTS_MAX_SAMPLES_STORED": "",
     "NEW_RELIC_SPAN_EVENTS_MAX_SAMPLES_STORED": "",
     "NEW_RELIC_LICENSE_KEY": "",
-    "GOTENBERG_URL": "http://gotenberg-app:3000",
-    "GOTENBERG_DOCS_URL": "http://server:3000/public/",
+    "GOTENBERG_URL": "http://127.0.0.1:3001",
+    "GOTENBERG_DOCS_URL": "http://127.0.0.1:3000/public/",
     "ADMIN_EMAIL": "accounting@bigcapital.com",
     "ADMIN_PASSWORD": "BigCapital",
     "SIGNUP_DISABLED": "false",
     "SIGNUP_ALLOWED_DOMAINS": "",
     "SIGNUP_ALLOWED_EMAILS": "",
     "SIGNUP_EMAIL_CONFIRMATION": "true",
+    "REDIS_HOST": "127.0.0.1",
+    "REDIS_PORT": "6379",
+    "QUEUE_HOST": "127.0.0.1",
+    "QUEUE_PORT": "6379",
+    "CLICKHOUSE_ENABLED": "false",
     **email_config,
 }
 agent.write_envfile("app.env", app_config)
