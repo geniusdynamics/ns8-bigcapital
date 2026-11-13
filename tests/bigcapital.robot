@@ -1,6 +1,9 @@
 *** Settings ***
 Library    SSHLibrary
 
+*** Variables ***
+${HOST}    bigcapital.example.org
+
 *** Test Cases ***
 Check if bigcapital is installed correctly
     ${output}  ${rc} =    Execute Command    add-module ${IMAGE_URL} 1
